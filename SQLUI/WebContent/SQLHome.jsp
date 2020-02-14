@@ -33,9 +33,20 @@ $(document).ready(function() {
 </div>
 <input type="submit" class="btn btn-primary"></input>
 </form>
-<div class="card-header" >
+<c:choose>
+    <c:when test="${empty status}">
+        <div class="card-header" >
             <i class="fas fa-table"></i>
-            Results Table</div>
+            Results Table </div>
+        
+    </c:when>
+    <c:otherwise>
+        <div class="card-header" >
+            <i class="fas fa-table"></i>
+            Results Table - <%= request.getAttribute("status") %></div>        
+    </c:otherwise>
+</c:choose>
+
 <table id="dataTable" class="table table-striped table-bordered" style="width:100%" >
         <thead>
             <c:forEach var="col" items="${colNames}">        
