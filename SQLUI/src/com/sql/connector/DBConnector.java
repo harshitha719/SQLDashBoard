@@ -6,10 +6,15 @@ import java.sql.SQLException;
 
 public class DBConnector {
 
+	//connection instance
 	static Connection connection = null;
-	static {
-		try {
+	 
+	public static Connection getConnection() throws ClassNotFoundException, SQLException{		
+		if (connection!= null) {
 			
+		return connection;
+		} 
+		else {
 			String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 			
 			String CONNECTION_URL = "jdbc:sqlserver://salesdatanew.ctsql1ybbrv6.us-east-2.rds.amazonaws.com:1433;database=salesdb";
@@ -24,15 +29,9 @@ public class DBConnector {
 			
 			// Step 2.A: Create and
 			// get connection using DriverManager class
-			connection=DriverManager.getConnection(CONNECTION_URL,USERNAME,PASSWORD); 
-
-		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
-		} 
-	}
-
-	public static Connection getConnection() {		
-		return connection;
+			connection=DriverManager.getConnection(CONNECTION_URL,USERNAME,PASSWORD);
+			return connection;
+		}
 	}
 
 }
