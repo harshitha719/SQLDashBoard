@@ -52,5 +52,7 @@ public class ResponseBean {
 	public void setRowCount(Integer rowCount) {
 		this.rowCount = rowCount;
 	}
+	
+
 
 }

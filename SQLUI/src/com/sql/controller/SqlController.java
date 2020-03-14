@@ -22,15 +22,50 @@ String updateresult;
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	RequestDispatcher dispatcher = request.getRequestDispatcher("SQLHome.jsp");
 	try {
-		String query = request.getParameter("query");
-		ResponseBean resp = SQLExecutor.getSQLResults(query);
-		allData = resp.getTableData();
-		allColumnNames = resp.getTableColumns();
-		updateresult = resp.getUpdateStatus();
-		request.setAttribute("colNames", allColumnNames);
-		request.setAttribute("rows", allData);
-		request.setAttribute("status", updateresult);		
-		dispatcher.forward(request, response);
+		updateresult = null;
+		String query = request.getParameter("query");		
+		String columnName = request.getParameter("columnName");
+		String columnValue = request.getParameter("columnValue");
+		
+		if (query!= null && query!= "") {
+			Boolean genericQueryFlag = true;
+			ResponseBean resp = SQLExecutor.getSQLResults(query, genericQueryFlag);
+			allData = resp.getTableData();
+			allColumnNames = resp.getTableColumns();
+			updateresult = resp.getUpdateStatus();
+			request.setAttribute("colNames", allColumnNames);
+			request.setAttribute("rows", allData);
+			request.setAttribute("status", updateresult);		
+			dispatcher.forward(request, response);
+		}  
+		else if (checkNullOrEmpty(columnName) && checkNullOrEmpty(columnValue)) {
+			Boolean genericQueryFlag = false;
+			String newQuery;
+			String [] columnInfo = columnName.split("\\.");
+			if(columnInfo[2].equalsIgnoreCase("integer") || columnInfo[2].equalsIgnoreCase("decimal")) {
+				query = "Select * from " + columnInfo[0] + " where "+ columnInfo[1] +" = "+ columnValue ;
+			} else if (columnInfo[2].equalsIgnoreCase("date")) {				
+				query = "Select * from " + columnInfo[0] + " where "+ columnInfo[1] +" = CAST('"+ columnValue +"' AS DATE)"; 
+			} else if (columnInfo[2].equalsIgnoreCase("string")) {
+				query = "Select * from " + columnInfo[0] + " where "+ columnInfo[1] +" = '"+ columnValue +"'";
+			}
+			
+			ResponseBean resp = SQLExecutor.getSQLResults(query, genericQueryFlag);
+			allData = resp.getTableData();
+			allColumnNames = resp.getTableColumns();
+			updateresult = resp.getUpdateStatus();
+			request.setAttribute("colNames", allColumnNames);
+			request.setAttribute("rows", allData);
+			request.setAttribute("status", updateresult);		
+			dispatcher.forward(request, response);
+		}
+		else {				
+			request.setAttribute("colNames", allColumnNames);
+			request.setAttribute("rows", allData);
+			request.setAttribute("status", updateresult);		
+			dispatcher.forward(request, response);
+		}
+		
 	} catch (Exception e) {
 		// TODO Auto-generated catch block		
 		e.printStackTrace();
@@ -39,6 +74,16 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 		dispatcher.forward(request, response);
 	}
 }
+
+public Boolean checkNullOrEmpty(String value) {
+	if (value!=null && value!= "") {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
 
 public ArrayList<ArrayList<String>> getAllData() {
 	return allData;
