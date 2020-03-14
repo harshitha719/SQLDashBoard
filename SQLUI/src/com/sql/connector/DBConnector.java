@@ -17,7 +17,7 @@ public class DBConnector {
 		else {
 			String DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 			
-			String CONNECTION_URL = "jdbc:sqlserver://database-1.cfbdhnm640in.us-east-2.rds.amazonaws.com:1433;database=salesdb";
+			String CONNECTION_URL = "jdbc:sqlserver://database-1.cfbdhnm640in.us-east-2.rds.amazonaws.com:1433;database=invoicedb";
 			
 			String USERNAME = "admin";
 			
